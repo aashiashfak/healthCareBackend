@@ -3,6 +3,8 @@ from .serializers import *
 from rest_framework.views import APIView
 from utils.utils import generate_otp , send_otp_email
 from django.core.cache import cache
+from rest_framework.response import Response
+from rest_framework import status, generics
 
 class UserLoginAPIview(APIView):
     def post(self, request):
@@ -19,6 +21,7 @@ class UserLoginAPIview(APIView):
                 otp = existing_otp
             username = email.split('@')[0]
 
+            print("generated_otp", otp)
             try:
                 send_otp_email(email, username, otp)
                 return Response({"message": "OTP sent successfully."}, status=status.HTTP_200_OK)
