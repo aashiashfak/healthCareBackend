@@ -117,6 +117,7 @@ class PatientSignUpRequestView(APIView):
 
 class PatientSignUpVerifyView(APIView):
     def post(self, request):
+        print('patient_data', request.data)
         serializer = PatientSignUpSerializer(data=request.data)
 
         if serializer.is_valid():

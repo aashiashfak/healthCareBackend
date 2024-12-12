@@ -27,7 +27,27 @@ SECRET_KEY = 'django-insecure-g$)=uawib%l7$@c!3fxy#jxy!qj@d!$o*vx%dkxb%voss2bs^j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost', 
+    '127.0.0.1',
+    '13.60.111.177',
+    'api.instytution.live',
+]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173", 
+    "http://127.0.0.1:5173",  
+]
+CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_HEADERS = [
+#     'content-type',
+#     'authorization',
+#     'x-csrftoken',
+#     'accept',
+#     'accept-encoding',
+#     'origin',
+#     'user-agent',
+# ]
+# CORS_EXPOSE_HEADERS = ['Set-Cookie']
 
 
 # Application definition
@@ -41,12 +61,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #apps
     'accounts',
-    'Doctors'
+    'Doctors',
+    #third_party
+    'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -155,4 +179,10 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=14),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
 }
