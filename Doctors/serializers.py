@@ -14,50 +14,48 @@ class SpecialtySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class DoctorProfileSerializer(serializers.ModelSerializer):
-    department = serializers.CharField()
-    specialties = serializers.ListField(child=serializers.CharField())
+    department = serializers.SlugRelatedField(
+        slug_field='name', queryset=Department.objects.all()
+    )
+    specialties = serializers.SlugRelatedField(
+        slug_field='name', queryset=Specialty.objects.all(), many=True
+    )
     user = UserSerializer()
 
     class Meta:
         model = DoctorProfile
         fields = '__all__'
 
-    def validate_department(self, value):
+    def validate(self, data):
         """
-        Ensure the provided department exists by name.
+        Validate that the user and related data are consistent.
         """
-        if not Department.objects.filter(name=value).exists():
-            raise serializers.ValidationError(f"Department '{value}' does not exist.")
-        return value
+        department = data.get('department')
+        specialties = data.get('specialties')
 
-    def validate_specialties(self, value):
-        """
-        Ensure all provided specialties exist by name.
-        """
-        specialties = []
-        for specialty_name in value:
-            try:
-                specialty = Specialty.objects.get(name=specialty_name)
-                specialties.append(specialty)
-            except Specialty.DoesNotExist:
-                raise serializers.ValidationError(f"Specialty '{specialty_name}' does not exist.")
-        return specialties
+        if not department:
+            raise serializers.ValidationError("Department is required.")
+        
+        if not specialties:
+            raise serializers.ValidationError("At least one specialty is required.")
+
+        return data
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
-        department_name = validated_data.pop('department')
-        specialties_data = validated_data.pop('specialties') 
+        department = validated_data.pop('department')
+        specialties = validated_data.pop('specialties')
 
+        # Create user
         email = user_data.pop('email')
         user_data['role'] = 'Doctor'
         user = CustomUser.objects.create_user(email=email, **user_data)
 
-        department = Department.objects.get(name=department_name)
-
+        # Create doctor profile
         doctor = DoctorProfile.objects.create(
             user=user,
             department=department,
             **validated_data
         )
-        doctor.specialties.set(specialties_data)
+        doctor.specialties.set(specialties)
         return doctor

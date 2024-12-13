@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.db.models import JSONField
-
+from accounts.models import CustomUser
 class Department(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True, null=True)
@@ -17,7 +17,7 @@ class Specialty(models.Model):
         return self.name
 
 class DoctorProfile(models.Model):
-    user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="doctor_profile")
     specialties = models.ManyToManyField('Specialty', blank=True)
     department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, blank=True)
     off_days = JSONField(default=list)  
