@@ -1,10 +1,9 @@
-from django.shortcuts import render
 from rest_framework import generics, filters as drf_filters
 from django_filters.rest_framework import DjangoFilterBackend
 from Doctors.serializers import DoctorProfileSerializer
 from Doctors.models import DoctorProfile
 from .filters import DoctorProfileFilter
-
+import inspect
 class DoctorsListView(generics.ListAPIView):
     """
     API view to list all doctors with their profiles, departments, and specialties.

@@ -6,7 +6,7 @@ from accounts.models import CustomUser
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
-        fields = ['name', 'description']
+        fields = '__all__'
         
 class SpecialtySerializer(serializers.ModelSerializer):
     class Meta:

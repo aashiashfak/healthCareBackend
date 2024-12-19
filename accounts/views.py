@@ -154,7 +154,6 @@ class PatientSignUpVerifyView(APIView):
                                 emergency_contact_number=patient_data.get('emergency_contact_number', '')
                             )
                             patient_profile.save()
-                            
                     tokens = user.tokens 
                     user_serializer = UserSerializer(user)
 
