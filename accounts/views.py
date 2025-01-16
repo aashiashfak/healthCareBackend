@@ -68,6 +68,8 @@ class UserLoginVerifyAPIView(APIView):
                     "access": tokens['access']
                 }, status=status.HTTP_200_OK)
                 
+                print(response.data)
+                
                 refresh_token_expiry = settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME']
 
                 response.set_cookie(

@@ -53,22 +53,23 @@ CORS_ALLOW_ALL_ORIGINS = True
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    #apps
-    'accounts',
-    'Doctors',
-    'custom_admin',
-    'patient',
-    #third_party
-    'rest_framework',
-    'corsheaders',
-    'debug_toolbar',
-    'django_filters',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    # apps
+    "accounts",
+    "Doctors",
+    "custom_admin",
+    "patient",
+    "hospital",
+    # third_party
+    "rest_framework",
+    "corsheaders",
+    "debug_toolbar",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -84,7 +85,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'healthcare.urls'
-
 
 
 TEMPLATES = [
@@ -174,7 +174,7 @@ CACHES = {
     }
 }
 
-#email 
+# email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  

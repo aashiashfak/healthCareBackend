@@ -10,44 +10,50 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('Doctor', 'Doctor'),
         ('Nurse', 'Nurse'),
         ('Staff', 'Administrative Staff'),
-        ('Admin', 'Hospital Administrator'),
+        ('Hospital', 'Hospital Admin'),
+        ('Admin', 'Main Administator'),
     ]
     username = models.CharField(max_length=25, default="guest")
     email = models.EmailField(_('email address'), unique=True)
     phone_number = models.CharField(max_length=15, null=True, blank=True, unique=True)
     role = models.CharField(max_length=50, choices=ROLE_CHOICES)
+    address = models.ForeignKey(
+        "Address",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="user_address",
+    )
     date_of_birth = models.DateField(null=True, blank=True)
     is_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser= models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
-    
+
     objects = CustomUserManager()
-    
+
     @property
     def tokens(self) -> dict[str,str]:
         print('reached in gen tokens')
-        
+
         referesh = RefreshToken.for_user(self)
-        
+
         return{
            'refresh': str(referesh),
             'access': str(referesh.access_token),
         } 
 
     USERNAME_FIELD = 'email' 
-    
+
     def __str__(self):
         return f"{self.username} ({self.role})"
-    
+
 class PatientProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="patient_profile")
     gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')])
     blood_group = models.CharField(max_length=3, null=True, blank=True)
     allergies = models.TextField(null=True, blank=True)
-    address = models.TextField(null=True, blank=True)
     emergency_contact_number = models.CharField(max_length=15)
     
     def __str__(self):
@@ -64,8 +70,14 @@ class InsurancePolicy(models.Model):
         return f"{self.name} ({self.insurance_number})"
 
 
+class Address(models.Model):
+    street_name_1 = models.CharField(max_length=100)
+    street_name_2 = models.CharField(max_length=100, blank=True, null=True)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    pincode = models.CharField(max_length=10)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
-    
-    
-    
-    
+    def __str__(self):
+        return f"{self.street_name_1}, {self.city}, {self.state}, {self.pincode}"

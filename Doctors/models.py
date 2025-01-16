@@ -20,6 +20,14 @@ class DoctorProfile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="doctor_profile")
     specialties = models.ManyToManyField('Specialty', blank=True)
     department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, blank=True)
+    hospital = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        limit_choices_to={'role': 'Hospital'},
+        related_name="doctors"
+    )
     off_days = JSONField(default=list)  
     start_time = models.TimeField(null=True, blank=True)
     end_time = models.TimeField(null=True, blank=True)
