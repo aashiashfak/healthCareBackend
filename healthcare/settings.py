@@ -28,14 +28,15 @@ SECRET_KEY = 'django-insecure-g$)=uawib%l7$@c!3fxy#jxy!qj@d!$o*vx%dkxb%voss2bs^j
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'localhost', 
-    '127.0.0.1',
-    '13.60.111.177',
-    'api.instytution.live',
+    "localhost",
+    "127.0.0.1",
+    "13.60.111.177",
+    "health-carefrontend-git-main-aashis-projects-14744245.vercel.app",
 ]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
-    "http://127.0.0.1:5173",  
+    "http://127.0.0.1:5173",
+    "https://health-carefrontend-git-main-aashis-projects-14744245.vercel.app",  
 ]
 CORS_ALLOW_ALL_ORIGINS = True
 # CORS_ALLOW_HEADERS = [
