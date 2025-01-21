@@ -27,13 +27,7 @@ SECRET_KEY = 'django-insecure-g$)=uawib%l7$@c!3fxy#jxy!qj@d!$o*vx%dkxb%voss2bs^j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "13.60.111.177",
-    "health-carefrontend-git-main-aashis-projects-14744245.vercel.app",
-    "health-care-backend-ivory.vercel.app",
-]
+ALLOWED_HOSTS = ["*"]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
     "http://127.0.0.1:5173",
