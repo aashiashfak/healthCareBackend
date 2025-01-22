@@ -7,6 +7,12 @@ from rest_framework.response import Response
 from rest_framework import status, generics
 from .models import CustomUser
 from django.conf import settings
+from upstash_redis import Redis
+
+redis = Redis(
+    url="https://accepted-mantis-42257.upstash.io",
+    token="AaURAAIjcDFlYTA5Y2NkZmFjZWI0NWQ3OGZhNjNiMTExNjkyNTY4N3AxMA",
+)
 
 class UserLoginRequestAPIView(APIView):
     def post(self, request):
@@ -14,11 +20,11 @@ class UserLoginRequestAPIView(APIView):
         if serializer.is_valid():
             email = serializer.validated_data['email']
             cache_key = f"otp_{email}"  
-            existing_otp = cache.get(cache_key)
-            
+            existing_otp = redis.get(cache_key)
+
             if not existing_otp:
                 otp = generate_otp()
-                cache.set(cache_key, otp, timeout=120)
+                redis.set(cache_key, otp, ex=120) 
             else:
                 otp = existing_otp
             username = email.split('@')[0]
@@ -34,18 +40,18 @@ class UserLoginRequestAPIView(APIView):
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
 
 class UserLoginVerifyAPIView(APIView):
     def post(self, request):
         serializer = UserVerifyOtpSerializer(data=request.data)
-        
+
         if serializer.is_valid():
             email = serializer.validated_data['email']
             otp = serializer.validated_data['otp']  
-            
-            stored_otp = cache.get(f"otp_{email}")
-            print('stored_otp', stored_otp, "otp",  otp, end="\n" )
+
+            stored_otp = redis.get(f"otp_{email}")
+            print(stored_otp)
             
             if stored_otp == otp:
                 try:
@@ -56,9 +62,9 @@ class UserLoginVerifyAPIView(APIView):
                         {"error": "User does not exist."},
                         status=status.HTTP_404_NOT_FOUND
                     )
-                
+
                 cache.delete(f"otp_{email}")
-                
+
                 tokens = user.tokens 
                 user_serializer = UserSerializer(user)
 
@@ -67,9 +73,9 @@ class UserLoginVerifyAPIView(APIView):
                     "user": user_serializer.data,
                     "access": tokens['access']
                 }, status=status.HTTP_200_OK)
-                
+
                 print(response.data)
-                
+
                 refresh_token_expiry = settings.SIMPLE_JWT['REFRESH_TOKEN_LIFETIME']
 
                 response.set_cookie(
@@ -115,7 +121,6 @@ class PatientSignUpRequestView(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    
 
 class PatientSignUpVerifyView(APIView):
     def post(self, request):
