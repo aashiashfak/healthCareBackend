@@ -34,7 +34,7 @@ class UserLoginRequestAPIView(APIView):
                 send_otp_email(email, username, otp)
                 return Response({"message": "OTP sent successfully."}, status=status.HTTP_200_OK)
             except Exception as e:
-                cache.delete(cache_key)
+                redis.delete(cache_key)
                 return Response(
                     {"error": "Failed to send OTP. Please try again later."},
                     status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -57,13 +57,13 @@ class UserLoginVerifyAPIView(APIView):
                 try:
                     user = CustomUser.objects.get(email=email)
                 except CustomUser.DoesNotExist:
-                    cache.delete(f"otp_{email}")
+                    redis.delete(f"otp_{email}")
                     return Response(
                         {"error": "User does not exist."},
                         status=status.HTTP_404_NOT_FOUND
                     )
 
-                cache.delete(f"otp_{email}")
+                redis.delete(f"otp_{email}")
 
                 tokens = user.tokens 
                 user_serializer = UserSerializer(user)
