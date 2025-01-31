@@ -19,3 +19,4 @@ class DoctorProfileFilter(filters.FilterSet):
     def filter_specialty(self, queryset, name, value):
         specialties = value.split(",")  
         return queryset.filter(specialties__name__in=specialties).distinct()
+ 
