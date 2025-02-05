@@ -4,13 +4,17 @@ from .models import *
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
+
+
+class UserRegisterSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
     phone_number = serializers.CharField(max_length=15, required=True)
 
     def validate(self, attrs):
         email = attrs.get("email")
         phone_number = attrs.get("phone_number")
         errors = {}
-        
+
         if email and CustomUser.objects.filter(email=email).exists():
             errors["email"] = "Email is already in use."
         if (

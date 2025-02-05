@@ -102,7 +102,7 @@ class UserLoginVerifyAPIView(APIView):
 
 class PatientSignUpRequestView(APIView):
     def post(self, request):
-        serializer = UserLoginSerializer(data=request.data)
+        serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data["email"]
 
