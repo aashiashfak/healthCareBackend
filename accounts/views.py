@@ -150,12 +150,12 @@ class PatientSignUpVerifyView(APIView):
             if otp == stored_otp:
                 user_data = serializer.validated_data["patient"]["user_data"]
                 user = CustomUser.objects.filter(email=email).first()
+                
                 if not user:
                     user_data["role"] = "Patient"
                     password = user_data.get("password", None)
                     email = user_data.pop("email")
-                    print("email", email)
-
+                    print(user_data)
                     user = CustomUser.objects.create_user(
                         email=email, password=password, **user_data
                     )
@@ -167,7 +167,6 @@ class PatientSignUpVerifyView(APIView):
                                 gender=patient_data.get("gender", ""),
                                 blood_group=patient_data.get("blood_group", ""),
                                 allergies=patient_data.get("allergies", ""),
-                                address=patient_data.get("address", ""),
                                 emergency_contact_number=patient_data.get(
                                     "emergency_contact_number", ""
                                 ),
